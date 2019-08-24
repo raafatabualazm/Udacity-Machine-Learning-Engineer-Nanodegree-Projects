@@ -13056,25 +13056,6 @@ ul.typeahead-list  > li > a.pull-right {
 .ansi-bold { font-weight: bold; }
 
     </style>
-<style type="text/css">
-    body[data-notebook-name] > #header #header-container:not(.show-panel), /* body has data-notebook-name attribute when 
-a notebook is open. this rule won't be applied when the notebook is not open (in 404 view for example) */
-body[data-notebook-name] #menubar-container #maintoolbar:not(.show-panel),
-body[data-notebook-name] #menubar-container ul.navbar-nav:not(.show-panel) {
-  display: none;
-}
-
-#menubar.only-panel #menus.navbar-default {
-    background: #fff;
-    border-color: #fff;
-}
-
-.toolbar.with-statusbar{
-    margin-top: 3px;
-    margin-bottom: 0;
-}
-
-    </style>
 
 
 <style type="text/css">
@@ -13108,7 +13089,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -13472,7 +13453,7 @@ The Dog dataset gives an accuracy of 89% (Predicting 11 human faces out of 100, 
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Question 2:</strong> This algorithmic choice necessitates that we communicate to the user that we accept human images only when they provide a clear view of a face (otherwise, we risk having unneccessarily frustrated users!). In your opinion, is this a reasonable expectation to pose on the user? If not, can you think of a way to detect humans in images that does not necessitate an image with a clearly presented face?</p>
-<p><strong>Answer:</strong> Although I do think that requiring users to submit pictures with a clear view of the face is a plausible request, as people tend to face cameras. However we can still detect humans from other features like body shape and position.</p>
+<p><strong>Answer:</strong> Although I do think that requiring users to submit pictures with a clear view of the face is a plausible request, as people tend to face cameras. However we can still detect humans from other features like body shape and position. There's an implemented algorithm in OpenCV called HOG (Histograms of Gradients) that's gearedtoward that. It detects bystanders or pedestrians.</p>
 <p>We suggest the face detector from OpenCV as a potential way to detect human images in your algorithm, but you are free to explore other approaches, especially approaches that make use of deep learning :).  Please use the code cell below to design and test your own face detection algorithm.  If you decide to pursue this <em>optional</em> task, report performance on each of the datasets.</p>
 
 </div>
@@ -13803,7 +13784,7 @@ The Dog Detector function scores 100% percent on human dataset (Predicting 0 hum
 <p>We have imported some Python modules to get you started, but feel free to import as many modules as you need.  If you end up getting stuck, here's a hint that specifies a model that trains relatively fast on CPU and attains &gt;1% test accuracy in 5 epochs:</p>
 <p><img src="images/sample_cnn.png" alt="Sample CNN"></p>
 <p><strong>Question 4:</strong> Outline the steps you took to get to your final CNN architecture and your reasoning at each step.  If you chose to use the hinted architecture above, describe why you think that CNN architecture should work well for the image classification task.</p>
-<p><strong>Answer:</strong></p>
+<p><strong>Answer:</strong> I used the hinted architecture above and I think it makes sense as 3 layers of progressively more complicated features are suffiecient as they are all dogs and might share some features. In every layer I use double the filters of the previous layer to compine and form as many feature detectors as possible that will help the nexr layer, as the the features get more complicated their putting together will give rise to still a more complicated and distibctive features.</p>
 
 </div>
 </div>
@@ -14855,6 +14836,13 @@ test_{network} = bottleneck_features['test']</code></pre>
 </code></pre>
 <p><strong>Question 5:</strong> Outline the steps you took to get to your final CNN architecture and your reasoning at each step.  Describe why you think the architecture is suitable for the current problem.</p>
 <p><strong>Answer:</strong></p>
+<ul>
+<li>First We load the trained weights and maps, or more generally the features of the pre-trained model on the ImageNet dataset. </li>
+<li>Second, We creat a Global Average Pooling layer that takes the input the last tensor form of the input image and it takes the average of all of its features.</li>
+<li>A final fully connected dense layer of 133 nodes (as this is the number of dog breeds required to classify) and softmax activation layer to give the probability of each breed.</li>
+<li>I believe the architecture is suitable as it doesn't divrege heavily from the ImageNet dataset (It is asubset of it) and it is reasonably large, so, it made sense that to use a pre-trained model and use it is already deep knowledge and train the final layer for our purposes.</li>
+<li>The previous two models didn't fare aswell as this one because the from scratch model didn't have enough levels to extract the required featres. Maybe the VGG16 weights and architecture are not as good as feature extraction of doogs and needed more higher layers to predict from its features, while I learnt online that InceptionV3 in Keras is fine tuned and great for animal extraction.</li>
+</ul>
 
 </div>
 </div>
@@ -15206,8 +15194,8 @@ Epoch 20/20
 <p><strong>Question 6:</strong> Is the output better than you expected :) ?  Or worse :( ?  Provide at least three possible points of improvement for your algorithm.</p>
 <p><strong>Answer:</strong> Amazingly enough it was better than I expected! But here are 3ways to improve the algorithm.</p>
 <ul>
-<li>Train the Neural Network for a greater number of epochs and use another optimizer. </li>
-<li>Maybe train another to detect human faces that doesn't think humans are dogs or train a network that recognizes humans from other features other than faces</li>
+<li>Train the Neural Network for a greater number of epochs and use another optimizer and fine tune the model. </li>
+<li>Handle better the case when there are multiple dogs/humans or dogs and humans in an image.</li>
 <li>Use a larger dataset to train on, or augument the current one to boost the network's invariance.</li>
 </ul>
 
